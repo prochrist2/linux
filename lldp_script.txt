@@ -1,0 +1,83 @@
+1. 2.10.19.82
+
+
+
+
+##lldp
+#i40e_path=/sys/kernel/debug/i40e
+#for dev in $i40e_path/*;
+#do
+#    [ -e "$dev" ] || break
+#    echo lldp stop > "${dev}/command"
+#done
+
+
+vendor=`dmidecode -s bios-vendor `
+
+if [ "$vendor" = "HPE" ] ; then
+
+for my_int in `ls -l /sys/class/net/ | awk '{ print $9 }' | egrep ens.f.`
+do
+    ethtool --set-priv-flags $my_int disable-fw-lldp on
+    lldptool set-lldp -i $my_int adminStatus=rxtx
+    lldptool -T -i $my_int -V sysName enableTx=yes
+    lldptool -T -i $my_int -V portDesc enableTx=yes
+    lldptool -T -i $my_int -V sysDesc enableTx=yes
+    lldptool -T -i $my_int -V sysCap enableTx=yes
+    lldptool -T -i $my_int -V mngAddr enableTx=yes
+done
+
+else
+for my_int in `ls -l /sys/class/net/ | awk '{ print $9 }' | awk '{ if(substr($1,1,1)=="p") print substr($1,1,4) }' | sort | uniq`
+do
+    ethtool --set-priv-flags $my_int disable-fw-lldp on
+    lldptool set-lldp -i $my_int adminStatus=rxtx
+    lldptool -T -i $my_int -V sysName enableTx=yes
+    lldptool -T -i $my_int -V portDesc enableTx=yes
+    lldptool -T -i $my_int -V sysDesc enableTx=yes
+    lldptool -T -i $my_int -V sysCap enableTx=yes
+    lldptool -T -i $my_int -V mngAddr enableTx=yes
+done
+
+fi
+
+
+
+
+2. 2.4.10
+
+##lldp
+i40e_path=/sys/kernel/debug/i40e
+for dev in $i40e_path/*;
+do
+    [ -e "$dev" ] || break
+    echo lldp stop > "${dev}/command"
+done
+
+
+vendor=`dmidecode -s bios-vendor `
+
+if [ "$vendor" = "HPE" ] ; then
+
+for my_int in `ls -l /sys/class/net/ | awk '{ print $9 }' | egrep ens.f.`
+do
+    lldptool set-lldp -i $my_int adminStatus=rxtx
+    lldptool -T -i $my_int -V sysName enableTx=yes
+    lldptool -T -i $my_int -V portDesc enableTx=yes
+    lldptool -T -i $my_int -V sysDesc enableTx=yes
+    lldptool -T -i $my_int -V sysCap enableTx=yes
+    lldptool -T -i $my_int -V mngAddr enableTx=yes
+done
+
+else
+for my_int in `ls -l /sys/class/net/ | awk '{ print $9 }' | awk '{ if(substr($1,1,1)=="p") print substr($1,1,4) }' | sort | uniq`
+do
+    lldptool set-lldp -i $my_int adminStatus=rxtx
+    lldptool -T -i $my_int -V sysName enableTx=yes
+    lldptool -T -i $my_int -V portDesc enableTx=yes
+    lldptool -T -i $my_int -V sysDesc enableTx=yes
+    lldptool -T -i $my_int -V sysCap enableTx=yes
+    lldptool -T -i $my_int -V mngAddr enableTx=yes
+done
+
+fi
