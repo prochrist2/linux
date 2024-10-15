@@ -1,0 +1,16 @@
+tar xvf i40e-2.10.19.82-3.10.0-862.11.6.link.tar -C /
+
+depmod
+
+dracut -f
+
+init 6
+
+/////////////////
+
+
+modinfo i40e
+version: 2.10.19.82
+
+modinfo iavf
+version: 3.7.61.20
